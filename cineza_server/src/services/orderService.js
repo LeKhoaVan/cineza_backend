@@ -1,11 +1,12 @@
 const { db } = require("../models/index");
 const { QueryTypes } = require("sequelize");
 
+
 const createOrderService = async (order, codeTicket) => {
   const newOrder = await db.Order.create(order);
   let checkSaveOrderDetail = true;
   codeTicket.codeTicket.forEach(async (ct) => {
-    const orderDetail = { codeOder: newOrder.code, codeTicket: ct };
+    const orderDetail = { codeOder: newOrder.code, codeTicket: ct.codeTicket, priceItemOrder: ct.priceTicket };
     const newOrderDetail = await db.OrderDetail.create(orderDetail);
     if (newOrderDetail != undefined) {
       checkSaveOrderDetail = false;
@@ -16,6 +17,7 @@ const createOrderService = async (order, codeTicket) => {
   }
   return null;
 };
+
 
 const getOrderServiceByCode = async (codeOrder) => {
   const query = `select ord.codeOder, ord.priceItemOrder , sh.showDate, sh.showStart, sh.showEnd, s.code, s.position, m.movieName, r.name as rapName, ro.name as roomName, o.datePay, o.description, us.code as codeUser, us.fullName
