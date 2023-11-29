@@ -28,7 +28,7 @@ const getAllMovieService = async (movieName) => {
 }
 
 const getDateByMovieService = async (movieCode) => {
-    const query = `select m.startDate, m.endDate from movie as m
+    const query = `select m.startDate, m.endDate from Movie as m
     where m.code = '${movieCode}';`
     const [date, metadata] = await db.sequelize.query(query);
     return date[0];
@@ -98,7 +98,7 @@ const updateMovieService = async (movieCode, movie) => {
 const getAllMovieForUserService = async (dateCheck) => {
     const query = `select m.code, m.movieName, m.moviePoster, m.movieTime, m.description, m.director, m.actor, m.language, m.startDate, 
     m.endDate, m.status, m.movieType
-    from movie as m
+    from Movie as m
     where m.status = "Hoạt động" and m.endDate >= "${dateCheck}";`;
     const dataAllMovie = db.sequelize.query(query, { type: QueryTypes.SELECT });
     return dataAllMovie;

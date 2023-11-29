@@ -2,16 +2,16 @@ const { db } = require("../models/index");
 const moment = require("moment"); // require
 const getAllShowService = async (movieName) => {
   const query = `select s.code, s.codeMovie, s.codeRap, s.codeRoom, s.showDate , s.showStart, s.showEnd, s.status, m.movieName as nameMovie, r.name as nameRap,  ro.name as nameRoom
-  from showing as s 
-  join movie as m on s.codeMovie = m.code
-  join rap as r on s.codeRap = r.code
-  join room as ro on s.codeRoom = ro.code
+  from Showing as s 
+  join Movie as m on s.codeMovie = m.code
+  join Rap as r on s.codeRap = r.code
+  join Room as ro on s.codeRoom = ro.code
   ORDER BY s.showDate DESC;`;
   const queryFind = `select s.code, s.codeMovie, s.codeRap, s.codeRoom, s.showDate , s.showStart, s.showEnd, s.status, m.movieName as nameMovie, r.name as nameRap,  ro.name as nameRoom
-  from showing as s 
-  join movie as m on s.codeMovie = m.code
-  join rap as r on s.codeRap = r.code
-  join room as ro on s.codeRoom = ro.code
+  from Showing as s 
+  join Movie as m on s.codeMovie = m.code
+  join Rap as r on s.codeRap = r.code
+  join Room as ro on s.codeRoom = ro.code
   where m.movieName LIKE '%${movieName}%'
   ORDER BY s.showDate DESC;`;
   if (movieName) {
@@ -25,10 +25,10 @@ const getAllShowService = async (movieName) => {
 
 const getShowByCodeService = async (code) => {
   const query = `select s.code, s.codeMovie, s.codeRap, s.codeRoom, s.showDate , s.showStart, s.showEnd, s.status, m.movieName, r.name as nameRap,  ro.name as nameRoom
-      from showing as s 
-      join movie as m on s.codeMovie = m.code
-      join rap as r on s.codeRap = r.code
-      join room as ro on s.codeRoom = ro.code
+      from Showing as s 
+      join Movie as m on s.codeMovie = m.code
+      join Rap as r on s.codeRap = r.code
+      join Room as ro on s.codeRoom = ro.code
       where s.code = '${code}'`;
   const [showing, metadata] = await db.sequelize.query(query);
   return showing[0];
@@ -37,8 +37,8 @@ const getShowByCodeService = async (code) => {
 const getShowByMovieAndDateService = async (codeMovie, date) => {
   const query = `select s.code, s.codeMovie, s.codeRap, s.codeRoom, s.showDate, s.showStart, s.showEnd, s.status, m.movieName,
   r.name as rapName, ro.name as roomName
-  from showing as s
-  join movie as m on m.code = s.codeMovie
+  from Showing as s
+  join Movie as m on m.code = s.codeMovie
   join Rap as r on r.code = s.codeRap
   join Room as ro on ro.code = s.codeRoom
   where s.codeMovie = '${codeMovie}' and s.showDate like '${date}%';`;
@@ -49,8 +49,8 @@ const getShowByMovieAndDateService = async (codeMovie, date) => {
 const getShowByRapAndDateService = async (codeRap, date) => {
   const query = `select s.code, s.codeMovie, s.codeRap, s.codeRoom, s.showDate, s.showStart, s.showEnd, s.status, m.movieName,
   r.name as rapName, ro.name as roomName
-  from showing as s
-  join movie as m on m.code = s.codeMovie
+  from Showing as s
+  join Movie as m on m.code = s.codeMovie
   join Rap as r on r.code = s.codeRap
   join Room as ro on ro.code = s.codeRoom
   where s.codeRap = '${codeRap}' and s.showDate like '${date}%';`;
@@ -61,8 +61,8 @@ const getShowByRapAndDateService = async (codeRap, date) => {
 const getShowByRapMovieAndDateService = async (codeRap, codeMovie, date) => {
   const query = `select s.code, s.codeMovie, s.codeRap, s.codeRoom, s.showDate, s.showStart, s.showEnd, s.status, m.movieName,
   r.name as rapName, ro.name as roomName
-  from showing as s
-  join movie as m on m.code = s.codeMovie
+  from Showing as s
+  join Movie as m on m.code = s.codeMovie
   join Rap as r on r.code = s.codeRap
   join Room as ro on ro.code = s.codeRoom
   where s.codeRap = '${codeRap}' and s.codeMovie = '${codeMovie}' and s.showDate like '${date}%';`;
@@ -98,7 +98,7 @@ const checkShow = async (codeRap, codeRoom, showDate, showStart, showEnd) => {
   const end = `${newShowEnd.getFullYear()}-${newShowEnd.getMonth() + 1}-${newShowEnd.getDate()} ${newShowEnd.getHours()}:${newShowEnd.getMinutes()}:${newShowEnd.getSeconds()}`
 
   const query = `select s.code, s.showDate
-  from cineza.showing as s
+  from cineza.Showing as s
   where s.codeRap = '${codeRap}'
   and s.codeRoom = '${codeRoom}'
   and s.showDate = '${showDate}'
@@ -121,7 +121,7 @@ const updateStatusShowService = async (
   newShowStart.setHours(timeShowStart[0], timeShowStart[1], 0, 0);
   const start = moment(newShowStart).format("YYYY-MM-DD hh:mm:ss");
   const query = `
-  UPDATE cineza.showing as s
+  UPDATE cineza.Showing as s
   SET s.status = "Khóa tạm thời"
   where s.codeRap = '${codeRap}' 
   and s.codeRoom = '${codeRoom}' 
@@ -138,10 +138,10 @@ const updateStatusShowService = async (
 
 const getAllShowByMovieService = async (codeMovie) => {
   const query = `select s.code, s.codeMovie, s.codeRap, s.codeRoom,  s.showDate , s.showStart, s.showEnd, s.status, m.movieName, r.name as nameRap,  ro.name as nameRoom
-        from showing as s 
-        join movie as m on s.codeMovie = m.code
-        join rap as r on s.codeRap = r.code
-        join room as ro on s.codeRoom = ro.code
+        from Showing as s 
+        join Movie as m on s.codeMovie = m.code
+        join Rap as r on s.codeRap = r.code
+        join Room as ro on s.codeRoom = ro.code
         where s.codeMovie = '${codeMovie}'`;
   const [allShow, metadata] = await db.sequelize.query(query);
   return allShow;
@@ -149,10 +149,10 @@ const getAllShowByMovieService = async (codeMovie) => {
 
 const getAllShowByRapService = async (codeRap) => {
   const query = `select s.code, s.codeMovie, s.codeRap, s.codeRoom, s.showDate , s.showStart, s.showEnd, s.status, m.movieName, r.name as nameRap,  ro.name as nameRoom
-     from showing as s 
-     join movie as m on s.codeMovie = m.code
-     join rap as r on s.codeRap = r.code
-     join room as ro on s.codeRoom = ro.code
+     from Showing as s 
+     join Movie as m on s.codeMovie = m.code
+     join Rap as r on s.codeRap = r.code
+     join Room as ro on s.codeRoom = ro.code
      where s.codeRap = '${codeRap}';`;
   const [allShow, metadata] = await db.sequelize.query(query);
   return allShow;
@@ -160,10 +160,10 @@ const getAllShowByRapService = async (codeRap) => {
 
 const getAllShowByRoomService = async (codeRoom) => {
   const query = `select s.code, s.codeMovie, s.codeRap, s.codeRoom, s.showDate , s.showStart, s.showEnd, s.status, m.movieName, r.name as nameRap,  ro.name as nameRoom
-     from cineza.showing as s 
-     join cineza.movie as m on s.codeMovie = m.code
-     join cineza.rap as r on s.codeRap = r.code
-     join cineza.room as ro on s.codeRoom = ro.code
+     from cineza.Showing as s 
+     join cineza.Movie as m on s.codeMovie = m.code
+     join cineza.Rap as r on s.codeRap = r.code
+     join cineza.Room as ro on s.codeRoom = ro.code
      where s.codeRoom = '${codeRoom}';`;
   const [allShow, metadata] = await db.sequelize.query(query);
   return allShow;
@@ -171,10 +171,10 @@ const getAllShowByRoomService = async (codeRoom) => {
 
 const getAllShowByMovieAndRapService = async (codeMovie, codeRap) => {
   const query = `select s.code, s.codeMovie, s.codeRap, s.codeRoom, s.showDate , s.showStart, s.showEnd, s.status, m.movieName, r.name as nameRap,  ro.name as nameRoom
-     from showing as s 
-     join movie as m on s.codeMovie = m.code
-     join rap as r on s.codeRap = r.code
-     join room as ro on s.codeRoom = ro.code
+     from Showing as s 
+     join Movie as m on s.codeMovie = m.code
+     join Rap as r on s.codeRap = r.code
+     join Room as ro on s.codeRoom = ro.code
      where s.codeMovie = '${codeMovie}' and s.codeRap = '${codeRap}';`;
   const [allShow, metadata] = await db.sequelize.query(query);
   return allShow;

@@ -6,11 +6,11 @@ const getAllUserService = async () => {
     const query = `select u.code, u.type, u.fullName, u.numberPhone, u.dateOfBirth, u.password, u.countryAddress, u.cityAddress, u.districtAddress,
     u.wardAddress, u.numberHome, u.status, ct.code as codeCountry, ct.fullName as nameCountry, cit.code as codeCity, cit.fullName as nameCity,
     dt.code as codeDistrict, dt.fullName as nameDistrict, wd.code as codeWard, wd.fullName as nameWard
-    from user as u
-    left join address as ct on u.countryAddress = ct.code
-    left join address as cit on u.cityAddress = cit.code
-    left join address as dt on u.districtAddress = dt.code
-    left join address as wd on u.wardAddress = wd.code`
+    from User as u
+    left join Address as ct on u.countryAddress = ct.code
+    left join Address as cit on u.cityAddress = cit.code
+    left join Address as dt on u.districtAddress = dt.code
+    left join Address as wd on u.wardAddress = wd.code`
     const dataUser = await db.sequelize.query(query, { type: QueryTypes.SELECT });
     return dataUser;
 }

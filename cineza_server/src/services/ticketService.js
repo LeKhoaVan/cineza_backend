@@ -5,32 +5,32 @@ const { getShowByCodeService } = require("./showingService");
 const getAllTicketService = async (movieName, showDate) => {
   const query = `select t.code, t.bookAt, t.ticketEffecticeAt, t.ticketExpiryAt, t.status, t.codeShowing, t.codeSeat, t.codeUser,
           r.name as rapName, ro.name as roomName, m.code as movieCode, m.movieName, s.showDate, s.showStart, s.showEnd,  se.position, v.fullName
-          from cineza.ticket as t
-          join cineza.showing as s on t.codeShowing = s.code
-          join cineza.seat as se on t.codeSeat = se.code
-          join cineza.movie as m on s.codeMovie = m.code 
-          join cineza.rap as r on s.codeRap = r.code
-          join cineza.room as ro on s.codeRoom = ro.code
-          join cineza.user as v on v.code = t.codeUser;`;
+          from cineza.Ticket as t
+          join cineza.Showing as s on t.codeShowing = s.code
+          join cineza.Seat as se on t.codeSeat = se.code
+          join cineza.Movie as m on s.codeMovie = m.code 
+          join cineza.Rap as r on s.codeRap = r.code
+          join cineza.Room as ro on s.codeRoom = ro.code
+          join cineza.User as v on v.code = t.codeUser;`;
   const queryFind = `select t.code, t.bookAt, t.ticketEffecticeAt, t.ticketExpiryAt, t.status, t.codeShowing, t.codeSeat, t.codeUser,
          r.name as rapName, ro.name as roomName, m.code as movieCode, m.movieName, s.showDate, s.showStart, s.showEnd,  se.position, v.fullName
-         from cineza.ticket as t
-         join cineza.showing as s on t.codeShowing = s.code
-         join cineza.seat as se on t.codeSeat = se.code
-         join cineza.movie as m on s.codeMovie = m.code 
-         join cineza.rap as r on s.codeRap = r.code
-       join cineza.room as ro on s.codeRoom = ro.code
-         join cineza.user as v on v.code = t.codeUser
+         from cineza.Ticket as t
+         join cineza.Showing as s on t.codeShowing = s.code
+         join cineza.Seat as se on t.codeSeat = se.code
+         join cineza.Movie as m on s.codeMovie = m.code 
+         join cineza.Rap as r on s.codeRap = r.code
+       join cineza.Room as ro on s.codeRoom = ro.code
+         join cineza.User as v on v.code = t.codeUser
     where movieName LIKE '%${movieName}%';`;
   const queryFindbyDate = `select t.code, t.bookAt, t.ticketEffecticeAt, t.ticketExpiryAt, t.status, t.codeShowing, t.codeSeat, t.codeUser,
           r.name as rapName, ro.name as roomName, m.code as movieCode, m.movieName, s.showDate, s.showStart, s.showEnd,  se.position, v.fullName
-          from cineza.ticket as t
-          join cineza.showing as s on t.codeShowing = s.code
-          join cineza.seat as se on t.codeSeat = se.code
-          join cineza.movie as m on s.codeMovie = m.code 
-          join cineza.rap as r on s.codeRap = r.code
-          join cineza.room as ro on s.codeRoom = ro.code
-          join cineza.user as v on v.code = t.codeUser
+          from cineza.Ticket as t
+          join cineza.Showing as s on t.codeShowing = s.code
+          join cineza.Seat as se on t.codeSeat = se.code
+          join cineza.Movie as m on s.codeMovie = m.code 
+          join cineza.Rap as r on s.codeRap = r.code
+          join cineza.Room as ro on s.codeRoom = ro.code
+          join cineza.User as v on v.code = t.codeUser
           where m.movieName LIKE '%${movieName}%' and s.showDate LIKE '%${showDate}%';`;
   if (movieName) {
     const [allTicket, metadata] = await db.sequelize.query(queryFind);
@@ -50,13 +50,13 @@ const getTicketByCodeService = async (code) => {
   const query = `select t.code, t.bookAt, t.ticketEffecticeAt, t.ticketExpiryAt, t.codeShowing, t.status, t.codeSeat, 
         r.name as rapName, ro.code as roomCode, ro.name as roomName, s.showDate, s.showStart, s.showEnd, m.code as movieCode, m.movieName,
         t.codeUser, u.fullName, se.position
-    from ticket as t
-    join showing as s on t.codeShowing = s.code
-    join seat as se on t.codeSeat = se.code
-    join movie as m on s.codeMovie = m.code
-    join rap as r on s.codeRap = r.code
-    join room as ro on s.codeRoom = ro.code
-    join user as u on u.code = t.codeUser
+    from Ticket as t
+    join Showing as s on t.codeShowing = s.code
+    join Seat as se on t.codeSeat = se.code
+    join Movie as m on s.codeMovie = m.code
+    join Rap as r on s.codeRap = r.code
+    join Room as ro on s.codeRoom = ro.code
+    join User as u on u.code = t.codeUser
     where t.code = '${code}'`;
   const [ticket, metadata] = await db.sequelize.query(query);
   return ticket[0];
@@ -66,29 +66,29 @@ const getTicketByShowingService = async (codeShowing) => {
   const query = `select t.code, t.bookAt, t.ticketEffecticeAt, t.ticketExpiryAt, t.status, t.codeShowing, t.codeSeat, 
         r.name as rapName, ro.name as roomName, s.showDate, s.showStart, s.showEnd, m.code as movieCode, m.movieName,
         t.codeUser, u.fullName, se.position
-        from ticket as t
-        join showing as s on t.codeShowing = s.code
-        join seat as se on t.codeSeat = se.code
-        join movie as m on s.codeMovie = m.code
-        join rap as r on s.codeRap = r.code
-        join room as ro on s.codeRoom = ro.code
-        join user as u on u.code = t.codeUser
+        from Ticket as t
+        join Showing as s on t.codeShowing = s.code
+        join Seat as se on t.codeSeat = se.code
+        join Movie as m on s.codeMovie = m.code
+        join Rap as r on s.codeRap = r.code
+        join Room as ro on s.codeRoom = ro.code
+        join User as u on u.code = t.codeUser
         where t.codeShowing = '${codeShowing}'`;
   const [ticket, metadata] = await db.sequelize.query(query);
   return ticket;
 };
 
 const getTicketByMovieService = async (codeMovie) => {
-  const query = `select * from cineza.ticket as t 
-	join cineza.showing as s on t.codeShowing = s.code
-	join cineza.movie as m on s.codeMovie = m.code 
+  const query = `select * from cineza.Ticket as t 
+	join cineza.Showing as s on t.codeShowing = s.code
+	join cineza.Movie as m on s.codeMovie = m.code 
     where m.code='${codeMovie} and s.showDate >= "2023-11-26 00:00:00"'`;
   const [ticket, metadata] = await db.sequelize.query(query);
   return ticket;
 };
 
 const checkSeatBook = async (codeSeat, codeShowing) => {
-  const query = `select t.id from ticket as t where t.codeSeat = '${codeSeat}' and t.codeShowing = '${codeShowing}';`;
+  const query = `select t.id from Ticket as t where t.codeSeat = '${codeSeat}' and t.codeShowing = '${codeShowing}';`;
   const [check, metadata] = await db.sequelize.query(query);
   return check[0];
 };
@@ -123,7 +123,7 @@ const createTicketService = async (ticket) => {
 
 const getAllSeatIsBookService = async (codeShowing) => {
   const query = `select t.codeSeat
-    from ticket as t
+    from Ticket as t
     where t.codeShowing = '${codeShowing}'`;
   const [seats, metadata] = await db.sequelize.query(query);
   return seats;

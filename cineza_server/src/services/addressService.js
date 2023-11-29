@@ -59,7 +59,7 @@ const updateAddressByCodeService = async (code, address) => {
 
 const getAddressByParentService = async (codeParent) => {
     const query = `select ad.code, ad.type, ad.parentId, ad.level, ad.fullName, ad.status
-    from address as ad
+    from Address as ad
     where ad.parentId = "${codeParent}";`
     const dataAddress = await db.sequelize.query(query, { type: QueryTypes.SELECT });
     return dataAddress;

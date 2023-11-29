@@ -2,9 +2,9 @@ const { QueryTypes } = require("sequelize");
 const { db } = require("../models/index");
 
 const getAllPriceByHeaderService = async (codeHeader) => {
-  const query = `select pr.code, pr.value, pr.codeTypeSeat, pr.codeHeader, pr.status, ph.description as nameHeader, ts.type as typeSeat from price as pr
-        join priceheader as ph on pr.codeHeader = ph.code
-        join typeseat as ts on pr.codeTypeSeat = ts.code
+  const query = `select pr.code, pr.value, pr.codeTypeSeat, pr.codeHeader, pr.status, ph.description as nameHeader, ts.type as typeSeat from Price as pr
+        join PriceHeader as ph on pr.codeHeader = ph.code
+        join TypeSeat as ts on pr.codeTypeSeat = ts.code
         where pr.codeHeader = '${codeHeader}'`;
 
   const [allPrice, metadata] = await db.sequelize.query(query);
@@ -44,7 +44,7 @@ const updatePriceService = async (code, price) => {
 };
 
 const checkTimePriceService = async (codeHeader, codeTypeSeat) => {
-  const query = `select * from price as p
+  const query = `select * from Price as p
   where p.codeHeader = "${codeHeader}" and codeTypeSeat="${codeTypeSeat}" and status = "Hoạt đông";`
 
   const dataCheck = await db.sequelize.query(query, { type: QueryTypes.SELECT });
@@ -53,7 +53,7 @@ const checkTimePriceService = async (codeHeader, codeTypeSeat) => {
 
 const updateStatusAllByHeaderAndTypeService = async (codeHeader, codeTypeSeat) => {
   const query = `
-  UPDATE price as p
+  UPDATE Price as p
   SET p.status = "Khóa tạm thời"
   WHERE p.codeHeader = "${codeHeader}" and p.codeTypeSeat = "${codeTypeSeat}"`;
 

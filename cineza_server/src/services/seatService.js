@@ -2,18 +2,18 @@ const { db } = require("../models/index");
 
 const getAllSeatService = async () => {
   const query = `select s.code, s.codeTypeSeat, s.position, s.codeRoom, s.status, s.isBook , r.name as nameRoom, ts.type as typeSeat
-    from seat as s
-    join room as r on r.code = s.codeRoom
-    join typeSeat as ts on ts.code = s.codeTypeSeat;`;
+    from Seat as s
+    join Room as r on r.code = s.codeRoom
+    join TypeSeat as ts on ts.code = s.codeTypeSeat;`;
   const [allSeat, setAllSeat] = await db.sequelize.query(query);
   return allSeat;
 };
 
 const getAllSeatByCodeRoomService = async (codeRoom) => {
   const query = `select s.code, s.codeTypeSeat, s.position, s.codeRoom, s.status, s.isBook , r.name as nameRoom, ts.type as typeSeat
-  from seat as s
-  join room as r on r.code = s.codeRoom
-  join typeSeat as ts on ts.code = s.codeTypeSeat
+  from Seat as s
+  join Room as r on r.code = s.codeRoom
+  join TypeSeat as ts on ts.code = s.codeTypeSeat
     where s.codeRoom = '${codeRoom}'
     order by s.position asc`;
   const [allSeat, setAllSeat] = await db.sequelize.query(query);
@@ -22,11 +22,11 @@ const getAllSeatByCodeRoomService = async (codeRoom) => {
 
 const getAllSeatByCodeRoomAndCodeTypeService = async (codeRoom, codeType) => {
   const query = `select s.code, s.codeTypeSeat, s.position, s.codeRoom, s.status, s.isBook , r.name as nameRoom, ts.type as typeSeat, p.value
-  from seat as s
-  join room as r on r.code = s.codeRoom
-  join typeSeat as ts on ts.code = s.codeTypeSeat
-  join price as p on p.codeTypeSeat = ts.code
-  join priceheader as ph on ph.code = p.codeHeader
+  from Seat as s
+  join Room as r on r.code = s.codeRoom
+  join TypeSeat as ts on ts.code = s.codeTypeSeat
+  join Price as p on p.codeTypeSeat = ts.code
+  join PriceHeader as ph on ph.code = p.codeHeader
     where s.codeRoom = '${codeRoom}' and s.codeTypeSeat = '${codeType}' and ph.status="Hoạt động" and p.status = "Hoạt động"
     order by s.position asc`;
   const [allSeat, setAllSeat] = await db.sequelize.query(query);
@@ -34,8 +34,8 @@ const getAllSeatByCodeRoomAndCodeTypeService = async (codeRoom, codeType) => {
 };
 
 const getPriceSeatService = async (codeTypeSeat) => {
-  const query = `select p.value, p.codeTypeSeat, ph.status from price as p
-  join priceheader as ph on ph.code = p.codeHeader
+  const query = `select p.value, p.codeTypeSeat, ph.status from Price as p
+  join PriceHeader as ph on ph.code = p.codeHeader
   where p.codeTypeSeat = '${codeTypeSeat}' and ph.status = 'Hoạt động'  and p.status = "Hoạt động"`;
   const [price, metadata] = await db.sequelize.query(query);
   return price[0];
@@ -43,9 +43,9 @@ const getPriceSeatService = async (codeTypeSeat) => {
 
 const getAllSeatByCodeService = async (code) => {
   const query = `select s.code, s.codeTypeSeat, s.position, s.codeRoom, s.status, s.isBook , r.name as nameRoom, ts.type as typeSeat
-  from seat as s
-  join room as r on r.code = s.codeRoom
-  join typeSeat as ts on ts.code = s.codeTypeSeat
+  from Seat as s
+  join Room as r on r.code = s.codeRoom
+  join TypeSeat as ts on ts.code = s.codeTypeSeat
     where s.code = '${code}'`;
   const [seat, setSeat] = await db.sequelize.query(query);
   return seat[0];
