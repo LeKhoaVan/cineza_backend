@@ -39,7 +39,7 @@ const getUserByTypeService = async (typeUser) => {
     left join address as dt on u.districtAddress = dt.code
     left join address as wd on u.wardAddress = wd.code
     where u.type = '${typeUser}';`
-    const dataUser = await db.sequelize.query(query, { type: QueryTypes.SELECT });
+    const [dataUser, metadata] = await db.sequelize.query(query);
     return dataUser;
 }
 
