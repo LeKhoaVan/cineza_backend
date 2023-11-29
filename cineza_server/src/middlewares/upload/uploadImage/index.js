@@ -1,12 +1,15 @@
 const multer = require("multer");
 const path = require("path");
 
-// Đường dẫn thư mục để lưu trữ
+//address folder save
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    // Sử dụng đường dẫn đầy đủ tới thư mục
-    const destinationPath = path.join(__dirname, "public", "img");
-    cb(null, destinationPath);
+	  // Lấy đường dẫn thư mục làm việc hiện tại (current working directory)
+const currentWorkingDir = process.cwd();
+
+// Nối thêm đường dẫn tương đối đến thư mục ./src/public/img
+const imgDir = path.join(currentWorkingDir, 'src', 'public', 'img');
+    cb(null, imgDir);
   },
   filename: (req, file, cb) => {
     cb(
@@ -16,27 +19,24 @@ const storage = multer.diskStorage({
   },
 });
 
-// Bộ lọc file
-const imageFilter = (req, file, cb) => {
+//filer file
+const imagleFiler = (req, file, cb) => {
   if (!file.originalname.match(/\.(jpg|JPG|jpeg|JPEG|png|PNG)$/)) {
-    req.fileValidationError = "Only image files are allowed";
-    return cb(new Error("Only image files are allowed"), false);
+    req.fileValidationError = "onle image files are allowed";
+    return cb(new Error("onle image files are allowed"), false);
   }
   cb(null, true);
 };
-
-// Khởi tạo middleware multer với cấu hình lưu trữ và bộ lọc
-const upload = multer({ storage: storage, fileFilter: imageFilter }).single(
+const upload = multer({ storage: storage, fileFilter: imagleFiler }).single(
   "poster"
 );
-
-// Xử lý lỗi upload file
-const handleUploadFile = (req, res, next) => {
+//hand error upload single file
+const handUploadFile = (req, res, next) => {
   upload(req, res, (err) => {
     if (err instanceof multer.MulterError) {
-      res.status(500).json({ error: err.message });
+      res.send(err);
     } else if (err) {
-      res.status(500).json({ error: err.message });
+      res.send(err);
     } else {
       next();
     }
@@ -44,5 +44,5 @@ const handleUploadFile = (req, res, next) => {
 };
 
 module.exports = {
-  handleUploadFile,
+  handUploadFile,
 };
