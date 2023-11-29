@@ -9,7 +9,7 @@ const getAllUserController = async (req, res) => {
         const dataUser = await getAllUserService();
         res.status(200).send(dataUser);
     } catch (error) {
-        res.staus(200).send("error get all user: " + error);
+        res.status(200).send("error get all user: " + error);
     }
 }
 
