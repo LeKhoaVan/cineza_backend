@@ -1,10 +1,12 @@
 const multer = require("multer");
 const path = require("path");
 
-//address folder save
+// Đường dẫn thư mục để lưu trữ
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "./src/public/img");
+    // Sử dụng đường dẫn đầy đủ tới thư mục
+    const destinationPath = path.join(__dirname, "public", "img");
+    cb(null, destinationPath);
   },
   filename: (req, file, cb) => {
     cb(
@@ -14,24 +16,27 @@ const storage = multer.diskStorage({
   },
 });
 
-//filer file
-const imagleFiler = (req, file, cb) => {
+// Bộ lọc file
+const imageFilter = (req, file, cb) => {
   if (!file.originalname.match(/\.(jpg|JPG|jpeg|JPEG|png|PNG)$/)) {
-    req.fileValidationError = "onle image files are allowed";
-    return cb(new Error("onle image files are allowed"), false);
+    req.fileValidationError = "Only image files are allowed";
+    return cb(new Error("Only image files are allowed"), false);
   }
   cb(null, true);
 };
-const upload = multer({ storage: storage, fileFilter: imagleFiler }).single(
+
+// Khởi tạo middleware multer với cấu hình lưu trữ và bộ lọc
+const upload = multer({ storage: storage, fileFilter: imageFilter }).single(
   "poster"
 );
-//hand error upload single file
-const handUploadFile = (req, res, next) => {
+
+// Xử lý lỗi upload file
+const handleUploadFile = (req, res, next) => {
   upload(req, res, (err) => {
     if (err instanceof multer.MulterError) {
-      res.send(err);
+      res.status(500).json({ error: err.message });
     } else if (err) {
-      res.send(err);
+      res.status(500).json({ error: err.message });
     } else {
       next();
     }
@@ -39,5 +44,5 @@ const handUploadFile = (req, res, next) => {
 };
 
 module.exports = {
-  handUploadFile,
+  handleUploadFile,
 };
