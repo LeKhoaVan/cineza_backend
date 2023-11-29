@@ -18,26 +18,24 @@ const createOrderService = async (order, codeTicket) => {
 };
 
 const getOrderServiceByCode = async (codeOrder) => {
-  const query = `select ord.codeOder, sh.showDate, sh.showStart, sh.showEnd, s.code, s.position, p.value, m.movieName, r.name as rapName, ro.name as roomName, o.datePay, o.description, us.code as codeUser, us.fullName
+  const query = `select ord.codeOder, ord.priceItemOrder , sh.showDate, sh.showStart, sh.showEnd, s.code, s.position, m.movieName, r.name as rapName, ro.name as roomName, o.datePay, o.description, us.code as codeUser, us.fullName
 from OrderDetail as ord
-join cineza.Order as o on o.code = ord.codeOder
+join cineza.order as o on o.code = ord.codeOder
 join User as us on us.code = o.codeUser
 join Ticket as t on t.code = ord.codeTicket
 join Showing as sh on t.codeShowing = sh.code
 join Seat as s on s.code = t.codeSeat
-join Typeseat as ts on ts.code = s.codeTypeSeat
-join Price as p on p.codeTypeSeat = ts.code
-join Priceheader as ph on ph.code = p.codeHeader
 join Movie as m on m.code = sh.codeMovie
 join Rap as r on r.code = sh.codeRap
 join Room as ro on ro.code = sh.codeRoom
-where ord.codeOder = "${codeOrder}" and ph.status = "Hoạt động"  and p.status = "Hoạt động";`;
+where ord.codeOder = "${codeOrder}";`;
 
   const dataOrder = await db.sequelize.query(query, {
     type: QueryTypes.SELECT,
   });
   return dataOrder;
 };
+
 
 const getTotalPriceByService = async (codeOrder) => {
   const query = `select sum(p.value) as value
