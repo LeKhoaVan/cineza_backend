@@ -14,7 +14,7 @@ const getAllMovie = async (req, res) => {
     const movies = await getAllMovieService(movieName);
     res.status(200).send(movies);
   } catch (error) {
-    res.status(500).send("error controller get all: ", error);
+    res.status(500).send("error controller get all: " + error);
   }
 };
 
