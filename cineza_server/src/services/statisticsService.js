@@ -3,7 +3,7 @@ const { db } = require("../models/index");
 const moment = require("moment")
 
 const getTotalOrderService = async (currentDate) => {
-    const query = `select o.code, o.datePay, o.description, o.codeUser, o.priceTotal, o.status
+    const query = `select o.code, o.datePay, o.description, o.codeUser, o.priceTotal
     from cineza.Order as o
     where "2021-01-01" <= o.datePay <= "${currentDate}";`
     const dataResult = await db.sequelize.query(query, { type: QueryTypes.SELECT });
@@ -21,25 +21,25 @@ const getTotalTicketService = async (currentDate) => {
 const getTotalOrderByTimeUserMovieService = async (timeStart, timeEnd, user, movie) => {
     let query = ``;
     if (movie == "" && user == "" && timeStart == "" && timeEnd == "") {
-        query = `select o.code, o.datePay, o.description, o.codeUser, o.priceTotal, o.status
+        query = `select o.code, o.datePay, o.description, o.codeUser, o.priceTotal
         from cineza.Order as o
         where "2021-01-01" <= o.datePay and o.datePay <= "${moment().format("YYYY-MM-DD")}";`
     } else if (movie == "" && user == "" && timeStart != "" && timeEnd != "") {
-        query = `select o.code, o.datePay, o.description, o.codeUser, o.priceTotal, o.status
+        query = `select o.code, o.datePay, o.description, o.codeUser, o.priceTotal
         from cineza.Order as o
         where "${timeStart}" <= o.datePay and o.datePay <= "${timeEnd}";`
     } else if (movie == "" && user != "" && timeStart != "" && timeEnd != "") {
-        query = `select o.code, o.datePay, o.description, o.codeUser, o.priceTotal, o.status
+        query = `select o.code, o.datePay, o.description, o.codeUser, o.priceTotal
         from cineza.Order as o
         where "${timeStart}"<= o.datePay and o.datePay <= "${timeEnd}" and o.codeUser = "${user}";`
     } else if (user == "" && movie != "" && timeStart != "" && timeEnd != "") {
-        query = `select o.code, o.datePay, o.description, o.codeUser, o.priceTotal, o.status, s.codeMovie
+        query = `select o.code, o.datePay, o.description, o.codeUser, o.priceTotal, s.codeMovie
         from cineza.Order as o
         join OrderDetail as ord on ord.codeOder = o.code
         join Ticket as t on t.code = ord.codeTicket
         join Showing as s on s.code = t.codeShowing
         where "${timeStart}" <= o.datePay and o.datePay <="${timeEnd}" and s.codeMovie = "${movie}"
-        GROUP BY o.code, o.datePay, o.description, o.codeUser, o.priceTotal, o.status, s.codeMovie;`
+        GROUP BY o.code, o.datePay, o.description, o.codeUser, o.priceTotal, s.codeMovie;`
     }
     const dataResult = await db.sequelize.query(query, { type: QueryTypes.SELECT });
     return dataResult;
@@ -74,9 +74,38 @@ const getTotalTicketByTimeUserMovieService = async (timeStart, timeEnd, user, mo
     return dataResult;
 }
 
+const statisticsTopMovieService = async (startDate, endDate) => {
+    let query = "";
+
+    if (startDate != "" && endDate != "") {
+        const start = moment(startDate).format("YYYY-MM-DD");
+        const end = moment(endDate).format("YYYY-MM-DD");
+
+        query = `select m.code, m.movieName, count(t.code) as totalTicket
+        from Movie as m
+        join Showing as s on s.codeMovie = m.code
+        left join Ticket as t on t.codeShowing = s.code
+        where s.showDate >= "${start}" and "${end}" >= s.showDate
+        group by m.code
+        order by totalTicket desc
+        LIMIT 5;`
+    } else {
+        query = `select m.code, m.movieName, count(t.code) as totalTicket
+        from Movie as m
+        join Showing as s on s.codeMovie = m.code
+        left join Ticket as t on t.codeShowing = s.code
+        group by m.code
+        order by totalTicket desc
+        LIMIT 5;`
+    }
+    const resultData = await db.sequelize.query(query, { type: QueryTypes.SELECT });
+    return resultData;
+}
+
 module.exports = {
     getTotalOrderService,
     getTotalTicketService,
     getTotalOrderByTimeUserMovieService,
-    getTotalTicketByTimeUserMovieService
+    getTotalTicketByTimeUserMovieService,
+    statisticsTopMovieService,
 }

@@ -3,7 +3,8 @@ const moment = require("moment")
 const { getTotalOrderService,
     getTotalTicketService,
     getTotalOrderByTimeUserMovieService,
-    getTotalTicketByTimeUserMovieService } = require("../services/statisticsService")
+    getTotalTicketByTimeUserMovieService,
+    statisticsTopMovieService } = require("../services/statisticsService")
 
 const getTotalOrderController = async (req, res) => {
     try {
@@ -45,9 +46,20 @@ const getTotalTicketByTimeUserMovieController = async (req, res) => {
     }
 }
 
+const statisticsTopMovieController = async (req, res) => {
+    const { startDate, endDate } = req.query;
+    try {
+        const dataStatistics = await statisticsTopMovieService(startDate, endDate);
+        res.status(200).send(dataStatistics);
+    } catch (error) {
+        res.status(200).send("error statistic top 5 movie: " + error);
+    }
+}
+
 module.exports = {
     getTotalOrderController,
     getTotalTicketController,
     getTotalOrderByTimeUserMovieController,
-    getTotalTicketByTimeUserMovieController
+    getTotalTicketByTimeUserMovieController,
+    statisticsTopMovieController
 }
