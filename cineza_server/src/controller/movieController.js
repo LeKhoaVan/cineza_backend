@@ -55,6 +55,15 @@ const getDateByMovieController = async (req, res) => {
 const createMovie = async (req, res) => {
   try {
     const { file } = req;
+	const srcIndex = file.path.indexOf("src");
+	let path = "";
+	// Kiểm tra xem "/src" có tồn tại không
+	if (srcIndex !== -1) {
+	  // Trích xuất phần từ "/src" đến hết
+	  path = url.substring(srcIndex);
+	}
+
+
     const filePath = `http://13.212.215.203:9000/${file.path}`;
     const moviePoster = filePath;
     const {
