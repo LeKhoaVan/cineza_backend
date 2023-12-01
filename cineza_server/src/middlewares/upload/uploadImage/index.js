@@ -8,7 +8,7 @@ const storage = multer.diskStorage({
 const currentWorkingDir = process.cwd();
 
 // Nối thêm đường dẫn tương đối đến thư mục ./src/public/img
-const imgDir = path.join(currentWorkingDir, 'src', 'public', 'img');
+const imgDir = path.join(currentWorkingDir, 'public', 'img');
     cb(null, imgDir);
   },
   filename: (req, file, cb) => {
