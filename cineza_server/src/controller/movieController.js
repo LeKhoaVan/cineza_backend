@@ -64,7 +64,7 @@ const createMovie = async (req, res) => {
 	}
 
 
-    const filePath = `http://13.212.215.203:9000/${file.path}`;
+    const filePath = `http://13.212.215.203:9000/${path}`;
     const moviePoster = filePath;
     const {
       code,
