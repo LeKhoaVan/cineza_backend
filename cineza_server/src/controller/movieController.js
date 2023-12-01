@@ -55,13 +55,13 @@ const getDateByMovieController = async (req, res) => {
 const createMovie = async (req, res) => {
   try {
     const { file } = req;
-	const srcIndex = file.path.indexOf("src");
-	let path = "";
-	// Kiểm tra xem "/src" có tồn tại không
-	if (srcIndex !== -1) {
-	  // Trích xuất phần từ "/src" đến hết
-	  path = await file.path.substring(srcIndex);
-	}
+    const srcIndex = file.path.indexOf("src");
+    let path = "";
+    // Kiểm tra xem "/src" có tồn tại không
+    if (srcIndex !== -1) {
+      // Trích xuất phần từ "/src" đến hết
+      path = await file.path.substring(srcIndex);
+    }
 
 
     const filePath = `http://13.212.215.203:9000/${path}`;
@@ -101,37 +101,48 @@ const createMovie = async (req, res) => {
 };
 
 const updateMovie = async (req, res) => {
-    const { file } = req;
-    let moviePoster = "";
-    if (file != undefined) {
-        const filePath = `http://13.212.215.203:9000/${file.path}`;
-        moviePoster = filePath;
+  const { file } = req;
+  let moviePoster = "";
+  let srcIndex = -1;
+  if (file != null) {
+    srcIndex = await file.path.indexOf("src")
+  }
+  let path = "";
+  // Kiểm tra xem "/src" có tồn tại không
+  if (srcIndex !== -1) {
+    // Trích xuất phần từ "/src" đến hết
+    path = await file.path.substring(srcIndex);
+    if (path != "") {
+      const filePath = `http://13.212.215.203:9000/${path}`;
+      moviePoster = filePath;
     }
+  }
 
-    const {
-        code, movieName, movieTime,
+
+  const {
+    code, movieName, movieTime,
+    description, director, actor, language,
+    startDate, endDate, movieType, status } = req.body;
+  try {
+    let updateMovie
+    if (moviePoster != "") {
+      updateMovie = await updateMovieService(code, {
+        movieName, movieTime, moviePoster,
         description, director, actor, language,
-        startDate, endDate, movieType, status } = req.body;
-    try {
-        let updateMovie
-        if (file != undefined) {
-            updateMovie = await updateMovieService(code, {
-                movieName, movieTime, moviePoster,
-                description, director, actor, language,
-                startDate, endDate, movieType, status
-            })
-        } else {
-            updateMovie = await updateMovieService(code, {
-                movieName, movieTime,
-                description, director, actor, language,
-                startDate, endDate, movieType, status
-            })
-        }
-
-        res.status(200).send(updateMovie);
-    } catch (error) {
-        res.status(500).send("error update movie: " + error)
+        startDate, endDate, movieType, status
+      })
+    } else {
+      updateMovie = await updateMovieService(code, {
+        movieName, movieTime,
+        description, director, actor, language,
+        startDate, endDate, movieType, status
+      })
     }
+
+    res.status(200).send(updateMovie);
+  } catch (error) {
+    res.status(500).send("error update movie: " + error)
+  }
 }
 
 
