@@ -60,7 +60,7 @@ const createMovie = async (req, res) => {
 	// Kiểm tra xem "/src" có tồn tại không
 	if (srcIndex !== -1) {
 	  // Trích xuất phần từ "/src" đến hết
-	  path = url.substring(srcIndex);
+	  path = file.path.substring(srcIndex);
 	}
 
 
