@@ -55,7 +55,7 @@ const getDateByMovieController = async (req, res) => {
 const createMovie = async (req, res) => {
   try {
     const { file } = req;
-    const filePath = `http://13.250.42.246:9000/${file.path}`;
+    const filePath = `http://13.212.215.203:9000/${file.path}`;
     const moviePoster = filePath;
     const {
       code,
@@ -95,7 +95,7 @@ const updateMovie = async (req, res) => {
     const { file } = req;
     let moviePoster = "";
     if (file != undefined) {
-        const filePath = `http://13.250.42.246:9000/${file.path}`;
+        const filePath = `http://13.212.215.203:9000/${file.path}`;
         moviePoster = filePath;
     }
 

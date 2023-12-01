@@ -11,7 +11,7 @@ const getRapByCodeService = async (code) => {
   return rap[0];
 };
 const getAllRapService = async () => {
-  const query = `select r.code, r.name, r.openTime, r.closeTime, r.countryAddress, r.cityAddress, r.districtAddress, r.wardAddress, r.status, r.numberRap, px.fullName as nameWard, qh.fullName as nameDistrict, ttp.fullName as nameCity, qg.fullName as nameCountry from rap as r
+  const query = `select r.code, r.name, r.openTime, r.closeTime, r.countryAddress, r.cityAddress, r.districtAddress, r.wardAddress, r.status, r.numberRap, px.fullName as nameWard, qh.fullName as nameDistrict, ttp.fullName as nameCity, qg.fullName as nameCountry from Rap as r
         join Address as px on r.wardAddress = px.code
         join Address as qh on r.districtAddress = qh.code
         join Address as ttp on r.cityAddress = ttp.code
