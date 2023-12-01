@@ -4,12 +4,7 @@ const path = require("path");
 //address folder save
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-	  // Lấy đường dẫn thư mục làm việc hiện tại (current working directory)
-const currentWorkingDir = process.cwd();
-
-// Nối thêm đường dẫn tương đối đến thư mục ./src/public/img
-const imgDir = path.join(currentWorkingDir, 'public', 'img');
-    cb(null, imgDir);
+    cb(null, "/src/public/img");
   },
   filename: (req, file, cb) => {
     cb(
