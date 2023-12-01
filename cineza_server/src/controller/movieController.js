@@ -64,7 +64,7 @@ const createMovie = async (req, res) => {
     }
 
 
-    const filePath = `http://13.212.32.129:9000/${path}`;
+    const filePath = `http://54.169.2.153:9000/${path}`;
     const moviePoster = filePath;
     const {
       code,
@@ -113,7 +113,7 @@ const updateMovie = async (req, res) => {
     // Trích xuất phần từ "/src" đến hết
     path = await file.path.substring(srcIndex);
     if (path != "") {
-      const filePath = `http://13.212.32.129:9000/${path}`;
+      const filePath = `http://54.169.2.153:9000/${path}`;
       moviePoster = filePath;
     }
   }
