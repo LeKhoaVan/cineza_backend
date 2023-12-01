@@ -22,7 +22,7 @@ const createOrderService = async (order, codeTicket) => {
 const getOrderServiceByCode = async (codeOrder) => {
   const query = `select ord.codeOder, ord.priceItemOrder , sh.showDate, sh.showStart, sh.showEnd, s.code, s.position, m.movieName, r.name as rapName, ro.name as roomName, o.datePay, o.description, us.code as codeUser, us.fullName
 from OrderDetail as ord
-join cineza.order as o on o.code = ord.codeOder
+join cineza.Order as o on o.code = ord.codeOder
 join User as us on us.code = o.codeUser
 join Ticket as t on t.code = ord.codeTicket
 join Showing as sh on t.codeShowing = sh.code
