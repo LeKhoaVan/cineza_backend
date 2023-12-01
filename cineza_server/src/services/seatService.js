@@ -1,5 +1,5 @@
 const { db } = require("../models/index");
-
+const moment = require("moment");
 const getAllSeatService = async () => {
   const query = `select s.code, s.codeTypeSeat, s.position, s.codeRoom, s.status, s.isBook , r.name as nameRoom, ts.type as typeSeat
     from Seat as s
