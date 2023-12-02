@@ -2,7 +2,7 @@ const express = require("express");
 
 const { getAllUserController, getUserByCodeController, createNewUserController, getUserByTypeController,
     updateUserController, sendEmailOTP, verifyEmail, loginController,
-    findUserByNameController } = require("../controller/userController");
+    findUserByNameController, checkEmailController } = require("../controller/userController");
 
 const userRouter = express.Router();
 
@@ -15,5 +15,6 @@ userRouter.post("/send-email-otp", sendEmailOTP);
 userRouter.post("/verify-otp", verifyEmail);
 userRouter.get("/login/:numberPhone/:password", loginController);
 userRouter.get("/find-user-by-name/:fullName", findUserByNameController);
+userRouter.get("/check-email/:email", checkEmailController);
 
 module.exports = userRouter;

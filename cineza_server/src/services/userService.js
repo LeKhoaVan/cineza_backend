@@ -85,6 +85,14 @@ const findUserByName = async (fullName) => {
     return dataUser;
 }
 
+const checkEmail = async (email) => {
+    const query = `select u.code, u.fullName 
+    from User as u
+    where u.numberPhone = "${email}";`
+    const [user] = await db.sequelize.query(query, { type: QueryTypes.SELECT });
+    return user;
+}
+
 module.exports = {
     getAllUserService,
     getUserByCodeService,
@@ -93,4 +101,5 @@ module.exports = {
     updateUserService,
     login,
     findUserByName,
+    checkEmail,
 }
