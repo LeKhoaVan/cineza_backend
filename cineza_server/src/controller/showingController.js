@@ -163,8 +163,9 @@ const updateShowController = async (req, res) => {
 
 const checkShowController = async (req, res) => {
   const { codeRap, codeRoom, showDate, showStart, showEnd } = req.params;
+  const { codeShow } = req.query;
   try {
-    const dataCheck = await checkShow(codeRap, codeRoom, showDate, showStart, showEnd);
+    const dataCheck = await checkShow(codeShow, codeRap, codeRoom, showDate, showStart, showEnd);
     res.status(200).send(dataCheck);
   } catch (error) {
     res.status(200).send("error check show: " + error);

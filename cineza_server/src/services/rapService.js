@@ -16,7 +16,7 @@ const getAllRapService = async () => {
         join Address as qh on r.districtAddress = qh.code
         join Address as ttp on r.cityAddress = ttp.code
         join Address as qg on r.countryAddress = qg.code
-        where r.status="Hoạt động" || r.status="Khóa hoạt động"`;
+        where r.status = "Hoạt động" or r.status = "Khóa tạm thời";`;
   const [allRap, metadata] = await db.sequelize.query(query);
   return allRap;
 };

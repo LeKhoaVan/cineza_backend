@@ -84,7 +84,7 @@ const updateShowService = async (code, show) => {
   return updateShow;
 };
 
-const checkShow = async (codeRap, codeRoom, showDate, showStart, showEnd) => {
+const checkShow = async (codeShow, codeRap, codeRoom, showDate, showStart, showEnd) => {
   const newShowStart = new Date(showDate);
   const newShowEnd = new Date(showDate);
 
@@ -97,14 +97,28 @@ const checkShow = async (codeRap, codeRoom, showDate, showStart, showEnd) => {
   const start = `${newShowStart.getFullYear()}-${newShowStart.getMonth() + 1}-${newShowStart.getDate()} ${newShowStart.getHours()}:${newShowStart.getMinutes()}:${newShowStart.getSeconds()}`
   const end = `${newShowEnd.getFullYear()}-${newShowEnd.getMonth() + 1}-${newShowEnd.getDate()} ${newShowEnd.getHours()}:${newShowEnd.getMinutes()}:${newShowEnd.getSeconds()}`
 
-  const query = `select s.code, s.showDate
-  from cineza.Showing as s
-  where s.codeRap = '${codeRap}'
-  and s.codeRoom = '${codeRoom}'
-  and s.showDate = '${showDate}'
-  and '${start}' <= s.showEnd
-  and '${end}' >= s.showStart
-  and s.status = 'Hoạt động';`;
+  let query = '';
+
+  if (codeShow == "") {
+    query = `select s.code, s.showDate
+    from cineza.Showing as s
+    where s.codeRap = '${codeRap}'
+    and s.codeRoom = '${codeRoom}'
+    and s.showDate = '${showDate}'
+    and '${start}' <= s.showEnd
+    and '${end}' >= s.showStart
+    and s.status = 'Hoạt động';`;
+  } else {
+    query = `select s.code, s.showDate
+    from cineza.Showing as s
+    where s.codeRap = '${codeRap}'
+    and s.codeRoom = '${codeRoom}'
+    and s.showDate = '${showDate}'
+    and '${start}' <= s.showEnd
+    and '${end}' >= s.showStart
+    and s.code != '${codeShow}'
+    and s.status = 'Hoạt động';`;
+  }
 
   const [shows, metadata] = await db.sequelize.query(query);
   return shows;
