@@ -2,12 +2,14 @@ const express = require("express");
 
 const { createMovie, getAllMovie, getByCodeMovie,
     updateMovie, updateStatusMovie, getMovieByDateController, getDateByMovieController,
-    getAllMovieForUser } = require("../controller/movieController")
+    getAllMovieForUser, findMovieForUserController } = require("../controller/movieController")
+
 const { handUploadFile } = require("../middlewares/upload/uploadImage/index");
 
 const movieRouter = express.Router();
 
 movieRouter.get("/get-all", getAllMovie);
+movieRouter.get("/find-movie-for-user", findMovieForUserController);
 movieRouter.get("/:movieCode", getByCodeMovie);
 movieRouter.get("/get-movie-by-date/:date", getMovieByDateController)
 movieRouter.get("/get-date/:codeMovie", getDateByMovieController)

@@ -6,6 +6,7 @@ const {
   getMovieByDateService,
   getDateByMovieService,
   getAllMovieForUserService,
+  findMovieForUserService,
 } = require("../services/movieService");
 
 const getAllMovie = async (req, res) => {
@@ -14,7 +15,7 @@ const getAllMovie = async (req, res) => {
     const movies = await getAllMovieService(movieName);
     res.status(200).send(movies);
   } catch (error) {
-    res.status(500).send("error controller get all: " + error);
+    res.status(500).send("error controller get all: ", error);
   }
 };
 
@@ -55,16 +56,7 @@ const getDateByMovieController = async (req, res) => {
 const createMovie = async (req, res) => {
   try {
     const { file } = req;
-    const srcIndex = file.path.indexOf("src");
-    let path = "";
-    // Kiểm tra xem "/src" có tồn tại không
-    if (srcIndex !== -1) {
-      // Trích xuất phần từ "/src" đến hết
-      path = await file.path.substring(srcIndex);
-    }
-
-
-    const filePath = `http://54.169.84.199:9000/${path}`;
+    const filePath = `http://localhost:9000/${file.path}`;
     const moviePoster = filePath;
     const {
       code,
@@ -103,21 +95,10 @@ const createMovie = async (req, res) => {
 const updateMovie = async (req, res) => {
   const { file } = req;
   let moviePoster = "";
-  let srcIndex = -1;
-  if (file != null) {
-    srcIndex = await file.path.indexOf("src")
+  if (file != undefined) {
+    const filePath = `http://localhost:9000/${file.path}`;
+    moviePoster = filePath;
   }
-  let path = "";
-  // Kiểm tra xem "/src" có tồn tại không
-  if (srcIndex !== -1) {
-    // Trích xuất phần từ "/src" đến hết
-    path = await file.path.substring(srcIndex);
-    if (path != "") {
-      const filePath = `http://54.169.84.199:9000/${path}`;
-      moviePoster = filePath;
-    }
-  }
-
 
   const {
     code, movieName, movieTime,
@@ -125,7 +106,7 @@ const updateMovie = async (req, res) => {
     startDate, endDate, movieType, status } = req.body;
   try {
     let updateMovie
-    if (moviePoster != "") {
+    if (file != undefined) {
       updateMovie = await updateMovieService(code, {
         movieName, movieTime, moviePoster,
         description, director, actor, language,
@@ -167,6 +148,17 @@ const getAllMovieForUser = async (req, res) => {
   }
 };
 
+const findMovieForUserController = async (req, res) => {
+  const { movieName } = req.query;
+  console.log(movieName)
+  try {
+    const allMovie = await findMovieForUserService(movieName);
+    res.status(200).send(allMovie);
+  } catch (error) {
+    res.status(200).send("error find movie for user: " + error)
+  }
+}
+
 module.exports = {
   createMovie,
   getAllMovie,
@@ -176,4 +168,5 @@ module.exports = {
   getMovieByDateController,
   getDateByMovieController,
   getAllMovieForUser,
+  findMovieForUserController,
 };

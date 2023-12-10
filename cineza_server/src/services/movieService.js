@@ -1,6 +1,7 @@
 const { Op, where, QueryTypes } = require("sequelize");
 
-const { db } = require("../models/index")
+const { db } = require("../models/index");
+const moment = require("moment");
 
 const getAllMovieService = async (movieName) => {
     if (movieName) {
@@ -18,11 +19,14 @@ const getAllMovieService = async (movieName) => {
                         }
                     }
                 ]
-            }
-        })
+            },
+            order: [['movieName', 'ASC']] // Sắp xếp theo movieName giảm dần
+        });
         return movies;
     } else {
-        const movies = await db.Movie.findAll();
+        const movies = await db.Movie.findAll({
+            order: [['movieName', 'ASC']] // Sắp xếp theo movieName giảm dần
+        });
         return movies
     }
 }
@@ -99,7 +103,19 @@ const getAllMovieForUserService = async (dateCheck) => {
     const query = `select m.code, m.movieName, m.moviePoster, m.movieTime, m.description, m.director, m.actor, m.language, m.startDate, 
     m.endDate, m.status, m.movieType
     from Movie as m
-    where m.status = "Hoạt động" and m.endDate >= "${dateCheck}";`;
+    where m.status = "Hoạt động" and m.endDate >= "${dateCheck}"
+    order by m.movieName ASC;`;
+    const dataAllMovie = db.sequelize.query(query, { type: QueryTypes.SELECT });
+    return dataAllMovie;
+}
+
+const findMovieForUserService = async (movieName) => {
+    const date = moment().format("YYYY-MM-DD")
+    const query = `select m.code, m.movieName, m.moviePoster, m.movieTime, m.description, m.director, m.actor, m.language, m.startDate, 
+    m.endDate, m.status, m.movieType
+    from Movie as m
+    where m.status = "Hoạt động" and m.endDate >= "${date}" and m.movieName like '%${movieName}%'
+    order by m.movieName ASC;`;
     const dataAllMovie = db.sequelize.query(query, { type: QueryTypes.SELECT });
     return dataAllMovie;
 }
@@ -111,4 +127,5 @@ module.exports = {
     getMovieByDateService,
     getDateByMovieService,
     getAllMovieForUserService,
+    findMovieForUserService,
 }
