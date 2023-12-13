@@ -10,12 +10,44 @@ const getTotalOrderService = async (currentDate) => {
     return dataResult;
 }
 
-const getTotalTicketService = async (currentDate) => {
-    const query = `select t.code, t.bookAt, t.ticketEffecticeAt, t.ticketExpiryAt, t.status, t.codeShowing, t.codeSeat, t.codeUser
-    from Ticket as t
-    where "2021-01-01" <= t.bookAt <= "${currentDate}";`
-    const dataResult = await db.sequelize.query(query, { type: QueryTypes.SELECT });
-    return dataResult;
+const getTotalTicketService = async (year, month) => {
+    let query = "";
+
+    if (year == "" && month == "") {
+        query = `select m.code, m.movieName, count(t.code) as totalTicket
+        from Movie as m
+        join Showing as s on s.codeMovie = m.code
+        left join Ticket as t on t.codeShowing = s.code
+        group by m.code
+        order by totalTicket desc;`
+    } else if (year != "" && month == "") {
+        query = `select m.code, m.movieName, count(t.code) as totalTicket
+        from Movie as m
+        join Showing as s on s.codeMovie = m.code
+        left join Ticket as t on t.codeShowing = s.code
+        where s.showDate >= "${year}-01-01" and "${parseInt(year) + 1}-01-01" > s.showDate
+        group by m.code
+        order by totalTicket desc;`
+    } else if (year != "" && month != "") {
+        let yearTam = 0;
+        let monthTam = 0;
+        if (month == "12") {
+            yearTam = parseInt(year) + 1;
+            monthTam = 0;
+        } else {
+            yearTam = year;
+            monthTam = month;
+        }
+        query = `select m.code, m.movieName, count(t.code) as totalTicket
+        from Movie as m
+        join Showing as s on s.codeMovie = m.code
+        left join Ticket as t on t.codeShowing = s.code
+        where s.showDate >= "${year}-${month}-01" and "${yearTam}-${String(parseInt(monthTam) + 1).padStart(2, '0')}-01" > s.showDate
+        group by m.code
+        order by totalTicket desc;`
+    }
+    const resultData = await db.sequelize.query(query, { type: QueryTypes.SELECT });
+    return resultData;
 }
 
 const getTotalOrderByTimeUserMovieService = async (timeStart, timeEnd, user, movie) => {
@@ -98,26 +130,41 @@ const getTotalTicketByTimeUserMovieService = async (timeStart, timeEnd, user, mo
     return dataResult;
 }
 
-const statisticsTopMovieService = async (startDate, endDate) => {
+const statisticsTopMovieService = async (year, month) => {
     let query = "";
 
-    if (startDate != "" && endDate != "") {
-        const start = moment(startDate).format("YYYY-MM-DD");
-        const end = moment(endDate).format("YYYY-MM-DD");
-
+    if (year == "" && month == "") {
         query = `select m.code, m.movieName, count(t.code) as totalTicket
         from Movie as m
         join Showing as s on s.codeMovie = m.code
         left join Ticket as t on t.codeShowing = s.code
-        where s.showDate >= "${start}" and "${end}" >= s.showDate
         group by m.code
         order by totalTicket desc
         LIMIT 5;`
-    } else {
+    } else if (year != "" && month == "") {
         query = `select m.code, m.movieName, count(t.code) as totalTicket
         from Movie as m
         join Showing as s on s.codeMovie = m.code
         left join Ticket as t on t.codeShowing = s.code
+        where s.showDate >= "${year}-01-01" and "${parseInt(year) + 1}-01-01" > s.showDate
+        group by m.code
+        order by totalTicket desc
+        LIMIT 5;`
+    } else if (year != "" && month != "") {
+        let yearTam = 0;
+        let monthTam = 0;
+        if (month == "12") {
+            yearTam = parseInt(year) + 1;
+            monthTam = 0;
+        } else {
+            yearTam = year;
+            monthTam = month;
+        }
+        query = `select m.code, m.movieName, count(t.code) as totalTicket
+        from Movie as m
+        join Showing as s on s.codeMovie = m.code
+        left join Ticket as t on t.codeShowing = s.code
+        where s.showDate >= "${year}-${month}-01" and "${yearTam}-${String(parseInt(monthTam) + 1).padStart(2, '0')}-01" > s.showDate
         group by m.code
         order by totalTicket desc
         LIMIT 5;`
@@ -126,10 +173,47 @@ const statisticsTopMovieService = async (startDate, endDate) => {
     return resultData;
 }
 
+const statisticsPriceService = async (year, month) => {
+    let query = '';
+    if (year == "" && month == "") {
+        const dateCurrent = moment().format("YYYY-MM-DD")
+        query = `select sum(o.priceTotal) as totalPrice,  YEAR(o.datePay) as title
+        from cineza.Order as o
+        group by title
+        order by title
+        LIMIT 5;`
+    } else if (year != "" && month == "") {
+        query = `select sum(o.priceTotal) as totalPrice,  MONTH(o.datePay) as title
+        from cineza.Order as o
+        where datePay >= '${year}-01-01' and datePay < '${parseInt(year) + 1}-01-01'
+        group by title
+        order by title;`
+    } else if (year != "" && month != "") {
+        let yearTam = 0;
+        let monthTam = 0;
+        if (month == "12") {
+            yearTam = parseInt(year) + 1;
+            monthTam = 0;
+        } else {
+            yearTam = year;
+            monthTam = month;
+        }
+
+        query = `select sum(o.priceTotal) as totalPrice, DAY(o.datePay) as title
+        from cineza.Order as o
+        where datePay >= '${year}-${month}-01' and datePay < '${yearTam}-${String(parseInt(monthTam) + 1).padStart(2, '0')}-01'
+        group by title
+        order by title;`
+    }
+    const dataStatis = await db.sequelize.query(query, { type: QueryTypes.SELECT });
+    return dataStatis;
+}
+
 module.exports = {
     getTotalOrderService,
     getTotalTicketService,
     getTotalOrderByTimeUserMovieService,
     getTotalTicketByTimeUserMovieService,
     statisticsTopMovieService,
+    statisticsPriceService
 }

@@ -11,7 +11,7 @@ const getAllRoomService = async () => {
 const getAllRoomByRapCodeService = async (codeRap) => {
   const query = `select ro.code, ro.name, ro.codeRap, ro.status, r.name as nameRap from Room as ro
         join Rap as r on ro.codeRap = r.code
-        where ro.codeRap = '${codeRap}' and ro.status="Hoạt động" || ro.status="Khóa tạm thời"`;
+        where ro.codeRap = '${codeRap}' and ro.status IN('Hoạt động', 'Khóa tạm thời');`;
 
   const [allRoom, metadata] = await db.sequelize.query(query);
   return allRoom;

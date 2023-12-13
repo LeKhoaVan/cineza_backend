@@ -4,7 +4,8 @@ const { getTotalOrderService,
     getTotalTicketService,
     getTotalOrderByTimeUserMovieService,
     getTotalTicketByTimeUserMovieService,
-    statisticsTopMovieService } = require("../services/statisticsService")
+    statisticsTopMovieService,
+    statisticsPriceService } = require("../services/statisticsService")
 
 const getTotalOrderController = async (req, res) => {
     try {
@@ -17,9 +18,9 @@ const getTotalOrderController = async (req, res) => {
 }
 
 const getTotalTicketController = async (req, res) => {
+    const { year, month } = req.query;
     try {
-        const currentDay = moment().format("YYYY-MM-DD");
-        const result = await getTotalTicketService(currentDay);
+        const result = await getTotalTicketService(year, month);
         res.status(200).send(result);
     } catch (error) {
         res.status(200).send("error get total ticket: " + error);
@@ -47,12 +48,22 @@ const getTotalTicketByTimeUserMovieController = async (req, res) => {
 }
 
 const statisticsTopMovieController = async (req, res) => {
-    const { startDate, endDate } = req.query;
+    const { year, month } = req.query;
     try {
-        const dataStatistics = await statisticsTopMovieService(startDate, endDate);
+        const dataStatistics = await statisticsTopMovieService(year, month);
         res.status(200).send(dataStatistics);
     } catch (error) {
         res.status(200).send("error statistic top 5 movie: " + error);
+    }
+}
+
+const statisticsYearController = async (req, res) => {
+    const { year, month } = req.query;
+    try {
+        const dataStatis = await statisticsPriceService(year, month);
+        res.status(200).send(dataStatis)
+    } catch (error) {
+        res.status(200).send("error statistic price year: " + error);
     }
 }
 
@@ -61,5 +72,6 @@ module.exports = {
     getTotalTicketController,
     getTotalOrderByTimeUserMovieController,
     getTotalTicketByTimeUserMovieController,
-    statisticsTopMovieController
+    statisticsTopMovieController,
+    statisticsYearController,
 }

@@ -56,7 +56,7 @@ const getDateByMovieController = async (req, res) => {
 const createMovie = async (req, res) => {
   try {
     const { file } = req;
-    const filePath = `http://localhost:9000/${file.path}`;
+    const filePath = `http://13.212.34.123:9000/${file.path}`;
     const moviePoster = filePath;
     const {
       code,
@@ -96,7 +96,7 @@ const updateMovie = async (req, res) => {
   const { file } = req;
   let moviePoster = "";
   if (file != undefined) {
-    const filePath = `http://localhost:9000/${file.path}`;
+    const filePath = `http://13.212.34.123:9000/${file.path}`;
     moviePoster = filePath;
   }
 
@@ -150,7 +150,6 @@ const getAllMovieForUser = async (req, res) => {
 
 const findMovieForUserController = async (req, res) => {
   const { movieName } = req.query;
-  console.log(movieName)
   try {
     const allMovie = await findMovieForUserService(movieName);
     res.status(200).send(allMovie);
