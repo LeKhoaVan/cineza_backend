@@ -53,10 +53,20 @@ const getDateByMovieController = async (req, res) => {
   }
 };
 
+
 const createMovie = async (req, res) => {
   try {
     const { file } = req;
-    const filePath = `http://13.212.34.123:9000/${file.path}`;
+    const srcIndex = file.path.indexOf("src");
+    let path = "";
+    // Kiểm tra xem "/src" có tồn tại không
+    if (srcIndex !== -1) {
+      // Trích xuất phần từ "/src" đến hết
+      path = await file.path.substring(srcIndex);
+    }
+
+
+    const filePath = `http://13.212.34.123:9000/${path}`;
     const moviePoster = filePath;
     const {
       code,
@@ -95,10 +105,21 @@ const createMovie = async (req, res) => {
 const updateMovie = async (req, res) => {
   const { file } = req;
   let moviePoster = "";
-  if (file != undefined) {
-    const filePath = `http://13.212.34.123:9000/${file.path}`;
-    moviePoster = filePath;
+  let srcIndex = -1;
+  if (file != null) {
+    srcIndex = await file.path.indexOf("src")
   }
+  let path = "";
+  // Kiểm tra xem "/src" có tồn tại không
+  if (srcIndex !== -1) {
+    // Trích xuất phần từ "/src" đến hết
+    path = await file.path.substring(srcIndex);
+    if (path != "") {
+      const filePath = `http://13.212.34.123:9000/${path}`;
+      moviePoster = filePath;
+    }
+  }
+
 
   const {
     code, movieName, movieTime,
@@ -106,7 +127,7 @@ const updateMovie = async (req, res) => {
     startDate, endDate, movieType, status } = req.body;
   try {
     let updateMovie
-    if (file != undefined) {
+    if (moviePoster != "") {
       updateMovie = await updateMovieService(code, {
         movieName, movieTime, moviePoster,
         description, director, actor, language,
@@ -125,6 +146,7 @@ const updateMovie = async (req, res) => {
     res.status(500).send("error update movie: " + error)
   }
 }
+
 
 
 const updateStatusMovie = async (req, res) => {
